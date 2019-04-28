@@ -26,9 +26,14 @@ Plug 'brooth/far.vim'
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'scrooloose/nerdtree'
 Plug 'yegappan/mru'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'mortonfox/nerdtree-clip'
+Plug 'kchmck/vim-coffee-script'
+Plug 'mileszs/ack.vim'
+Plug 'M4R7iNP/vim-inky'
 " Plug 'ryanoasis/vim-devicons'
 
-" Ruby/Rails related
+" ================ Ruby/Rails ======================
 Plug 'tpope/vim-rails'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-rbenv'
@@ -38,6 +43,8 @@ Plug 'thoughtbot/vim-rspec'
 Plug 'ruby-formatter/rufo-vim'
 Plug 'jgdavey/vim-blockle'
 Plug 'BlakeWilliams/vim-pry'
+Plug 'KurtPreston/vim-autoformat-rails'
+Plug 'vim-scripts/ruby-matchit'
 
 " Python related
 Plug 'python-mode/python-mode', { 'branch': 'develop' }
@@ -47,6 +54,7 @@ call plug#end()
 
 " VIM GENERAL CONFIG
 
+set encoding=UTF-8
 let mapleader = ',' " Remap <Leader> key
 noremap <Leader>s :update<CR>
 set number " Show line number
@@ -56,22 +64,19 @@ set textwidth=100 " More symbols on the line
 set t_Co=256 " Enable 256 colors if not enabled
 set noshowmode " Disable show mode 'cause it duplicate with airline bar mode
 filetype plugin indent on " Enable filetype detection
-au FocusLost User :wa " Save on autofocus lost
-color dracula " Colorsheme
+au FocusLost * silent! wa " Save on autofocus lost
+color solarized8_dark " Colorsheme
 set termguicolors
 set guicursor+=n:hor20-Cursor/lCursor " Use horizontal cursor
 set visualbell " Use visual bell (no beeping)
+set relativenumber
 
 set hlsearch  " Highlight all search results
 set smartcase " Enable smart-case search
 set ignorecase  " Always case-insensitive
 set infercase
 set incsearch " Searches for strings incrementally
-
 set showmatch " Highlight matching brace
-set expandtab " Insert spaces except tabs
-set tabstop=2 " Number of spaces per Tab
-set shiftwidth=2 " Number of auto-indent spaces
 
 set autowriteall  " Auto-write all file changes
 set undolevels=1000 " Number of undo levels
@@ -94,6 +99,21 @@ set display+=lastline
 let g:session_autosave = 'yes'
 let g:session_autoload = 'yes'
 let g:session_default_to_last = 1
+set splitright " Open new splits at the right side
+
+" ================ Indentation ======================
+
+set autoindent
+set smartindent
+set smarttab
+set shiftwidth=2
+set softtabstop=2
+set tabstop=2
+set expandtab " Insert spaces except tabs
+
+" Auto indent pasted text
+nnoremap p p=`]<C-o>
+nnoremap P P=`]<C-o>
 
 augroup dynamic_smartcase
     autocmd!
@@ -101,11 +121,22 @@ augroup dynamic_smartcase
     autocmd CmdLineLeave : set smartcase
 augroup END
 
+" =============== Splits ===========================
+
 " Key remapping for handy tab switching
 map <C-j> <C-W>j
 map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
+
+" Open new splits easily
+map vv <C-W>v
+map ss <C-W>s
+map Q  <C-W>q
+
+" Open splits on the right and below
+set splitbelow
+set splitright
 
 " Remove arrows
 noremap <Up> <NOP>
@@ -118,6 +149,9 @@ nnoremap TN :tabnew<CR>
 nnoremap TQ :tabclose<CR>
 nnoremap TE :tabe %<CR>
 nnoremap TO <C-w>T
+" Replace default tabs conf (MacOS specific)
+nnoremap ˚ gt
+nnoremap ∆ gT
 
 " PLUGINS CONFIG
 
@@ -145,37 +179,42 @@ nmap <silent> ]W <Plug>(ale_last)
 " NERDTree configs
 let NERDTreeShowHidden=1 " Show hidden files in NerdTree
 let NERDTreeCascadeSingleChildDir=0 " Remove one-child dirs collapsing
-map <C-n> :NERDTreeToggle<CR> " Shortcut for nerdtree tab toggle
-let NERDTreeStatusline="%{matchstr(getline('.'), '\\s\\zs\\w\\(.*\\)')}"
-let NERDTreeMinimalUI=1
+" Shortcut for nerdtree tab toggle
+map <C-s> :NERDTreeToggle<CR>
+nnoremap <silent> <Leader>v :NERDTreeFind<CR>
+let NERDTreeAutoDeleteBuffer = 1
+let NERDTreeStatusline = "%{matchstr(getline('.'), '\\s\\zs\\w\\(.*\\)')}"
+let NERDTreeMinimalUI = 1
 " permanent visibility on open and autoclose
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" prevent any opening files in NERDTree
+autocmd FileType nerdtree let t:nerdtree_winnr = bufwinnr('%')
+autocmd BufWinEnter * call PreventBuffersInNERDTree()
+
+function! PreventBuffersInNERDTree()
+  if bufname('#') =~ 'NERD_tree' && bufname('%') !~ 'NERD_tree'
+    \ && exists('t:nerdtree_winnr') && bufwinnr('%') == t:nerdtree_winnr
+    \ && &buftype == '' && !exists('g:launching_fzf')
+    let bufnum = bufnr('%')
+    close
+    exe 'b ' . bufnum
+  endif
+  if exists('g:launching_fzf') | unlet g:launching_fzf | endif
+endfunction
+let g:NERDTreeShowIgnoredStatus = 1
 
 " RSpec.vim mappings
 map <Leader>cs :call RunCurrentSpecFile()<CR>
 map <Leader>ns :call RunNearestSpec()<CR>
-map <Leader>l :call RunLastSpec()<CR>
-map <Leader>a :call RunAllSpecs()<CR>
+map <Leader>ls :call RunLastSpec()<CR>
+map <Leader>as :call RunAllSpecs()<CR>
 let g:rspec_command = "!bin/rspec {spec}"
 let g:rspec_runner = "os_x_iterm2"
 
 nmap <F8> :TagbarToggle<CR>
 let g:Tlist_Ctags_Cmd='/usr/local/Cellar/ctags/5.8_1/bin/ctags'
-
-" function! MyMode()
-"   let fname = expand('%:t')
-"   return fname == '__Tagbar__' ? 'Tagbar' :
-"         \ fname == 'ControlP' ? 'CtrlP' :
-"         \ fname == '__Gundo__' ? 'Gundo' :
-"         \ fname == '__Gundo_Preview__' ? 'Gundo Preview' :
-"         \ fname =~ 'NERD_tree' ?  NERDTreeStatusline():
-"         \ &ft == 'unite' ? 'Unite' :
-"         \ &ft == 'vimfiler' ? 'VimFiler' :
-"         \ &ft == 'vimshell' ? 'VimShell' :
-"         \ winwidth(0) > 60 ? lightline#mode() : ''
-" endfunction
 
 " Airline configs
 let g:airline_highlighting_cache=1
@@ -185,8 +224,21 @@ let g:python3_host_prog = '/usr/local/bin/python3'
 let g:python_host_prog = '/usr/local/bin/python2.7'
 let g:pymode_python = 'python3'
 let g:pymode_lint_on_fly = 1
-let g:pymode_lint_signs = 1
+let g:pymode_lint_signs = 0
 let g:pymode_lint_cwindow = 0
 
+" ctags configs
 set tags=tags
 set tags+=gems.tags
+
+" ================ Persistent Undo ==================
+" Keep undo history across sessions, by storing in file.
+" Only works all the time.
+if has('persistent_undo')
+  silent !mkdir ~/.vim/backups > /dev/null 2>&1
+  set undodir=~/.vim/backups
+  set undofile
+endif
+
+" Make Ack wroking with the silver searcher
+let g:ackprg = 'ag --nogroup --nocolor --column'
