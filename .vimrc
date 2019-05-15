@@ -31,6 +31,8 @@ Plug 'mortonfox/nerdtree-clip'
 Plug 'kchmck/vim-coffee-script'
 Plug 'mileszs/ack.vim'
 Plug 'M4R7iNP/vim-inky'
+Plug 'vim-scripts/SearchComplete'
+Plug 'airblade/vim-gitgutter'
 " Plug 'ryanoasis/vim-devicons'
 
 " ================ Ruby/Rails ======================
@@ -45,6 +47,8 @@ Plug 'jgdavey/vim-blockle'
 Plug 'BlakeWilliams/vim-pry'
 Plug 'KurtPreston/vim-autoformat-rails'
 Plug 'vim-scripts/ruby-matchit'
+Plug 'emilsoman/spec-outline.vim'
+Plug 'ecomba/vim-ruby-refactoring'
 
 " Python related
 Plug 'python-mode/python-mode', { 'branch': 'develop' }
@@ -240,5 +244,11 @@ if has('persistent_undo')
   set undofile
 endif
 
-" Make Ack wroking with the silver searcher
+" Make Ack to work with the silver searcher
 let g:ackprg = 'ag --nogroup --nocolor --column'
+
+" For Gitgutter
+set updatetime=100
+
+" Spec Outline
+let g:spec_outline_orientation = 'bottom'
