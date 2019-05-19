@@ -33,6 +33,7 @@ Plug 'mileszs/ack.vim'
 Plug 'M4R7iNP/vim-inky'
 Plug 'vim-scripts/SearchComplete'
 Plug 'airblade/vim-gitgutter'
+Plug 'mhartington/oceanic-next'
 " Plug 'ryanoasis/vim-devicons'
 
 " ================ Ruby/Rails ======================
@@ -69,7 +70,7 @@ set t_Co=256 " Enable 256 colors if not enabled
 set noshowmode " Disable show mode 'cause it duplicate with airline bar mode
 filetype plugin indent on " Enable filetype detection
 au FocusLost * silent! wa " Save on autofocus lost
-color solarized8_dark " Colorsheme
+color OceanicNext " Colorsheme
 set termguicolors
 set guicursor+=n:hor20-Cursor/lCursor " Use horizontal cursor
 set visualbell " Use visual bell (no beeping)
@@ -209,6 +210,12 @@ function! PreventBuffersInNERDTree()
 endfunction
 let g:NERDTreeShowIgnoredStatus = 1
 
+" Hides annoying path on top of the tree (higlights on cursor focus)
+augroup nerdtreehidecwd
+	autocmd!
+	autocmd FileType nerdtree setlocal conceallevel=3 | syntax match NERDTreeHideCWD #^[</].*$# conceal
+augroup end
+
 " RSpec.vim mappings
 map <Leader>cs :call RunCurrentSpecFile()<CR>
 map <Leader>ns :call RunNearestSpec()<CR>
@@ -223,6 +230,7 @@ let g:Tlist_Ctags_Cmd='/usr/local/Cellar/ctags/5.8_1/bin/ctags'
 " Airline configs
 let g:airline_highlighting_cache=1
 let g:airline_powerline_fonts = 1
+let g:airline_theme='oceanicnext'
 
 let g:python3_host_prog = '/usr/local/bin/python3'
 let g:python_host_prog = '/usr/local/bin/python2.7'
