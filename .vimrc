@@ -16,8 +16,6 @@ Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-abolish'
 Plug 'majutsushi/tagbar'
-Plug 'dracula/vim', { 'as': 'dracula' }
-Plug 'flazz/vim-colorschemes'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'
@@ -31,10 +29,8 @@ Plug 'mortonfox/nerdtree-clip'
 Plug 'kchmck/vim-coffee-script'
 Plug 'mileszs/ack.vim'
 Plug 'M4R7iNP/vim-inky'
-Plug 'vim-scripts/SearchComplete'
 Plug 'airblade/vim-gitgutter'
 Plug 'mhartington/oceanic-next'
-" Plug 'ryanoasis/vim-devicons'
 
 " ================ Ruby/Rails ======================
 Plug 'tpope/vim-rails'
@@ -254,9 +250,16 @@ endif
 
 " Make Ack to work with the silver searcher
 let g:ackprg = 'ag --nogroup --nocolor --column'
+nnoremap <Leader>a :Ack<Space>
+noremap <Leader>A :Ack <cword><cr>
+vnoremap <Leader>A y:Ack <C-r>=fnameescape(@")<CR><CR>
 
 " For Gitgutter
 set updatetime=100
 
 " Spec Outline
 let g:spec_outline_orientation = 'bottom'
+
+" Snippets
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
