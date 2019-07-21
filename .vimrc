@@ -6,31 +6,30 @@ function! DoRemote(arg)
 endfunction
 
 " Common plugs
-Plug 'Raimondi/delimitMate'
-Plug 'tomtom/tcomment_vim'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'jistr/vim-nerdtree-tabs'
+Plug 'mortonfox/nerdtree-clip'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'Raimondi/delimitMate'
+Plug 'wellle/targets.vim'
+Plug 'rhysd/clever-f.vim'
+Plug 'machakann/vim-highlightedyank'
+Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-abolish'
-Plug 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar' " need to configure
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'mhartington/oceanic-next'
 Plug 'w0rp/ale'
 Plug 'vim-scripts/AutoComplPop'
 Plug 'brooth/far.vim'
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-Plug 'scrooloose/nerdtree'
-Plug 'yegappan/mru'
 Plug 'terryma/vim-multiple-cursors'
-Plug 'mortonfox/nerdtree-clip'
-Plug 'kchmck/vim-coffee-script'
 Plug 'mileszs/ack.vim'
-Plug 'M4R7iNP/vim-inky'
 Plug 'airblade/vim-gitgutter'
-Plug 'mhartington/oceanic-next'
 
 " ================ Ruby/Rails ======================
 Plug 'tpope/vim-rails'
@@ -51,6 +50,11 @@ Plug 'ecomba/vim-ruby-refactoring'
 Plug 'python-mode/python-mode', { 'branch': 'develop' }
 Plug 'mgedmin/python-imports.vim'
 
+" JS and etc
+Plug 'pangloss/vim-javascript'
+Plug 'kchmck/vim-coffee-script'
+Plug 'M4R7iNP/vim-inky'
+
 call plug#end()
 
 " VIM GENERAL CONFIG
@@ -65,6 +69,8 @@ set textwidth=100 " More symbols on the line
 set t_Co=256 " Enable 256 colors if not enabled
 set noshowmode " Disable show mode 'cause it duplicate with airline bar mode
 filetype plugin indent on " Enable filetype detection
+syntax on
+set nocompatible
 au FocusLost * silent! wa " Save on autofocus lost
 color OceanicNext " Colorsheme
 set termguicolors
@@ -73,6 +79,7 @@ set visualbell " Use visual bell (no beeping)
 set relativenumber
 
 set hlsearch  " Highlight all search results
+set hls! " Toggle search higlighting
 set smartcase " Enable smart-case search
 set ignorecase  " Always case-insensitive
 set infercase
@@ -82,8 +89,6 @@ set showmatch " Highlight matching brace
 set autowriteall  " Auto-write all file changes
 set undolevels=1000 " Number of undo levels
 set backspace=indent,eol,start  " Backspace behaviour
-set showcmd
-set hls! " toggle search higlighting
 " Search visual selection
 vnoremap // y/<C-R>"<CR>
 " Swap current line and bottom line
@@ -254,7 +259,7 @@ nnoremap <Leader>a :Ack<Space>
 noremap <Leader>A :Ack <cword><cr>
 vnoremap <Leader>A y:Ack <C-r>=fnameescape(@")<CR><CR>
 
-" For Gitgutter
+" Gitgutter icons updatetime
 set updatetime=100
 
 " Spec Outline
@@ -263,3 +268,6 @@ let g:spec_outline_orientation = 'bottom'
 " Snippets
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+" Enforcing of ruby syntax (Temp fix for some issue)
+nnoremap RS :set syntax=ruby<CR>
