@@ -24,12 +24,13 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'mhartington/oceanic-next'
 Plug 'w0rp/ale'
-Plug 'vim-scripts/AutoComplPop'
 Plug 'brooth/far.vim'
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'mileszs/ack.vim'
 Plug 'airblade/vim-gitgutter'
+Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
+Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
 
 " ================ Ruby/Rails ======================
 Plug 'tpope/vim-rails'
@@ -271,3 +272,13 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 " Enforcing of ruby syntax (Temp fix for some issue)
 nnoremap RS :set syntax=ruby<CR>
+
+" Deoplete config
+let g:deoplete#enable_at_startup = 1
+inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+let g:monster#completion#backend = 'solargraph'
+let g:monster#completion#rcodetools#backend = "async_rct_complete"
+call deoplete#custom#source('tabnine', 'rank', 50)
+let g:deoplete#sources#omni#input_patterns = {
+\   "ruby" : '[^. *\t]\.\w*\|\h\w*::',
+\}
