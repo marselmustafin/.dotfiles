@@ -1,4 +1,7 @@
+set nocompatible
+
 " Plugs <3
+
 call plug#begin('~/.vim/plugged')
 
 function! DoRemote(arg)
@@ -11,7 +14,6 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'mortonfox/nerdtree-clip'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'Raimondi/delimitMate'
-Plug 'wellle/targets.vim'
 Plug 'rhysd/clever-f.vim'
 Plug 'machakann/vim-highlightedyank'
 Plug 'tomtom/tcomment_vim'
@@ -19,9 +21,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-abolish'
-Plug 'majutsushi/tagbar' " need to configure
 Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 Plug 'mhartington/oceanic-next'
 Plug 'w0rp/ale'
 Plug 'brooth/far.vim'
@@ -31,25 +31,24 @@ Plug 'mileszs/ack.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
+Plug 'janko/vim-test'
 
 " ================ Ruby/Rails ======================
+Plug 'vim-ruby/vim-ruby'
 Plug 'tpope/vim-rails'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-rbenv'
-Plug 'vim-ruby/vim-ruby'
 Plug 'slim-template/vim-slim'
-Plug 'thoughtbot/vim-rspec'
-Plug 'ruby-formatter/rufo-vim'
 Plug 'jgdavey/vim-blockle'
-Plug 'BlakeWilliams/vim-pry'
 Plug 'KurtPreston/vim-autoformat-rails'
 Plug 'vim-scripts/ruby-matchit'
 Plug 'emilsoman/spec-outline.vim'
 Plug 'ecomba/vim-ruby-refactoring'
+Plug 'BlakeWilliams/vim-pry'
+Plug 'victormours/ruby-memoize.vim'
 
 " Python related
 Plug 'python-mode/python-mode', { 'branch': 'develop' }
-Plug 'mgedmin/python-imports.vim'
 
 " JS and etc
 Plug 'pangloss/vim-javascript'
@@ -62,7 +61,7 @@ call plug#end()
 
 set encoding=UTF-8
 let mapleader = ',' " Remap <Leader> key
-noremap <Leader>s :update<CR>
+noremap <Leader>s :write<CR>
 set number " Show line number
 set mouse=a " Allow mouse
 set scrolloff=5 " Lines below/above when scrolling or finding
@@ -71,11 +70,10 @@ set t_Co=256 " Enable 256 colors if not enabled
 set noshowmode " Disable show mode 'cause it duplicate with airline bar mode
 filetype plugin indent on " Enable filetype detection
 syntax on
-set nocompatible
 au FocusLost * silent! wa " Save on autofocus lost
 color OceanicNext " Colorsheme
 set termguicolors
-set guicursor+=n:hor20-Cursor/lCursor " Use horizontal cursor
+set guicursor=n:hor20-Cursor/lCursor " Use horizontal cursor
 set visualbell " Use visual bell (no beeping)
 set relativenumber
 
@@ -103,10 +101,6 @@ nmap ; :
 autocmd BufWritePre * %s/\s\+$//e " No trailing whitespaces
 set hidden
 set display+=lastline
-let g:session_autosave = 'yes'
-let g:session_autoload = 'yes'
-let g:session_default_to_last = 1
-set splitright " Open new splits at the right side
 
 " ================ Indentation ======================
 
@@ -170,12 +164,15 @@ nnoremap <Leader>f :<C-u>FZF<CR>
 
 " Ale plugin linters
 let g:ale_linters = {
-      \ 'ruby': ['rubocop', 'solargraph'],
+      \ 'ruby': ['rubocop', 'reek'],
       \ }
 
 let g:ale_fixers = {
-      \ 'ruby': ['rubocop', 'solargraph'],
+      \ '*': ['remove_trailing_lines', 'trim_whitespace'],
+      \ 'ruby': ['rubocop', 'rufo'],
       \ }
+
+let g:ale_fix_on_save = 1
 
 " Mappings in the style of unimpaired-next
 nmap <silent> [W <Plug>(ale_first)
@@ -212,19 +209,11 @@ function! PreventBuffersInNERDTree()
 endfunction
 let g:NERDTreeShowIgnoredStatus = 1
 
-" Hides annoying path on top of the tree (higlights on cursor focus)
-augroup nerdtreehidecwd
-	autocmd!
-	autocmd FileType nerdtree setlocal conceallevel=3 | syntax match NERDTreeHideCWD #^[</].*$# conceal
-augroup end
-
-" RSpec.vim mappings
-map <Leader>cs :call RunCurrentSpecFile()<CR>
-map <Leader>ns :call RunNearestSpec()<CR>
-map <Leader>ls :call RunLastSpec()<CR>
-map <Leader>as :call RunAllSpecs()<CR>
-let g:rspec_command = "!bin/rspec {spec}"
-let g:rspec_runner = "os_x_iterm2"
+nmap <Leader>ns :TestNearest<CR>
+nmap <Leader>cs :TestFile<CR>
+nmap <Leader>as :TestSuite<CR>
+nmap <Leader>ls :TestLast<CR>
+nmap <Leader>bs :TestVisit<CR>
 
 nmap <F8> :TagbarToggle<CR>
 let g:Tlist_Ctags_Cmd='/usr/local/Cellar/ctags/5.8_1/bin/ctags'
@@ -255,7 +244,10 @@ if has('persistent_undo')
 endif
 
 " Make Ack to work with the silver searcher
-let g:ackprg = 'ag --nogroup --nocolor --column'
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
+
 nnoremap <Leader>a :Ack<Space>
 noremap <Leader>A :Ack <cword><cr>
 vnoremap <Leader>A y:Ack <C-r>=fnameescape(@")<CR><CR>
@@ -282,3 +274,16 @@ call deoplete#custom#source('tabnine', 'rank', 50)
 let g:deoplete#sources#omni#input_patterns = {
 \   "ruby" : '[^. *\t]\.\w*\|\h\w*::',
 \}
+
+let g:clever_f_repeat_last_char_inputs = ["\<CR>", "\<Tab>"]
+
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-s': 'split',
+  \ 'ctrl-v': 'vsplit' }
+
+let test#strategy = {
+  \ 'nearest': 'neovim',
+  \ 'file':    'dispatch',
+  \ 'suite':   'basic',
+  \}
