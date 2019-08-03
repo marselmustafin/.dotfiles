@@ -1,0 +1,8 @@
+---
+detectors:
+  IrresponsibleModule:
+    enabled: false
+  UnusedPrivateMethod:
+    enabled: false
+  InstanceVariableAssumption:
+    enabled: false
