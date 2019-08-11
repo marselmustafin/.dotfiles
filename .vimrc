@@ -102,6 +102,10 @@ autocmd BufWritePre * %s/\s\+$//e " No trailing whitespaces
 set hidden
 set display+=lastline
 
+" https://github.com/vim/vim/blob/master/runtime/doc/russian.txt
+" Enable hotkeys for Russian layout
+set langmap=ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz
+
 " ================ Indentation ======================
 
 set autoindent
