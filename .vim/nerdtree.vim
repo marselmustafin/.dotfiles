@@ -8,11 +8,12 @@ nnoremap <silent> <Leader>v :NERDTreeFind<CR>
 let NERDTreeAutoDeleteBuffer = 1
 let NERDTreeStatusline = "%{matchstr(getline('.'), '\\s\\zs\\w\\(.*\\)')}"
 let NERDTreeMinimalUI = 1
-" permanent visibility on open and autoclose
+" Permanent visibility on open and autoclose
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+" Close vim if the only window left open is a NERDTree
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-" prevent any opening files in NERDTree
+" Prevent any opening files in NERDTree
 autocmd FileType nerdtree let t:nerdtree_winnr = bufwinnr('%')
 autocmd BufWinEnter * call PreventBuffersInNERDTree()
 

@@ -9,13 +9,13 @@ function! DoRemote(arg)
 endfunction
 
 " Common plugs
+Plug 'sheerun/vim-polyglot'
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'mortonfox/nerdtree-clip'
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
-Plug 'jiangmiao/auto-pairs'
-" Plug 'rhysd/clever-f.vim'
+Plug 'Raimondi/delimitMate'
 Plug 'machakann/vim-highlightedyank'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-dispatch'
@@ -27,8 +27,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'mhartington/oceanic-next'
 Plug 'w0rp/ale'
 Plug 'brooth/far.vim'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
+Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'mileszs/ack.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
@@ -36,6 +35,9 @@ Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
 Plug 'janko/vim-test'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'google/vim-searchindex'
+Plug 'rhysd/clever-f.vim'
+Plug 'jeetsukumaran/vim-buffergator'
+Plug 'terryma/vim-multiple-cursors'
 
 " ================ Ruby/Rails ======================
 Plug 'vim-ruby/vim-ruby'
@@ -44,24 +46,18 @@ Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-rbenv'
 Plug 'tpope/vim-bundler'
 Plug 'slim-template/vim-slim'
-" Plug 'KurtPreston/vim-autoformat-rails'
 Plug 'vim-scripts/ruby-matchit'
 Plug 'emilsoman/spec-outline.vim'
 Plug 'ecomba/vim-ruby-refactoring'
 Plug 'BlakeWilliams/vim-pry'
 Plug 'victormours/ruby-memoize.vim'
 
-" Python related
-Plug 'python-mode/python-mode', { 'branch': 'develop' }
-
-" JS and etc
+" etc
 Plug 'pangloss/vim-javascript'
 Plug 'kchmck/vim-coffee-script'
 Plug 'M4R7iNP/vim-inky'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
-Plug 'ekalinin/Dockerfile.vim'
-
-" Go
+Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 call plug#end()
@@ -113,6 +109,9 @@ let g:airline_highlighting_cache=1
 let g:airline_powerline_fonts = 1
 let g:airline_theme='oceanicnext'
 let g:airline_powerline_fonts = 1
+let g:airline_skip_empty_sections = 1
+let g:airline#extensions#hunks#enabled = 0
+let g:airline#extensions#branch#displayed_head_limit = 20
 
 " ctags configs
 set tags=tags
@@ -160,3 +159,24 @@ let test#strategy = {
 autocmd! FileType fzf
 autocmd  FileType fzf set laststatus=0 noruler
   \| autocmd BufLeave <buffer> set laststatus=2 ruler
+
+if has('nvim')
+  tmap <C-o> <C-\><C-n>
+endif
+
+" Fugitive shortcuts
+nnoremap <leader>gb :Gblame<CR>
+nnoremap <leader>gd :Gvdiff<CR>
+nnoremap <leader>gD :Gvdiffsplit!<CR>
+nnoremap <leader>gs :Gstatus<CR>
+
+let ruby_operators = 1
+let ruby_pseudo_operators = 1
+autocmd FileType ruby nmap <Leader>r :!ruby %<CR>
+
+" DelimitMate
+let g:delimitMate_expand_cr = 1
+let g:delimitMate_expand_space = 1
+let g:delimitMate_smart_quotes = 1
+let g:delimitMate_expand_inside_quotes = 0
+let g:delimitMate_smart_matchpairs = '^\%(\w\|\$\)'
