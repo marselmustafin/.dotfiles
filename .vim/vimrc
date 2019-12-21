@@ -38,6 +38,7 @@ Plug 'google/vim-searchindex'
 Plug 'rhysd/clever-f.vim'
 Plug 'jeetsukumaran/vim-buffergator'
 Plug 'terryma/vim-multiple-cursors'
+Plug 'k0kubun/vim-open-github'
 
 " ================ Ruby/Rails ======================
 Plug 'vim-ruby/vim-ruby'
