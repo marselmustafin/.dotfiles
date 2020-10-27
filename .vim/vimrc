@@ -194,9 +194,6 @@ let g:delimitMate_smart_matchpairs = '^\%(\w\|\$\)'
 
 " change current word (like ciw) but repeatable with dot . for the same next word
 nnoremap <silent> <leader><Tab> :let @/=expand('<cword>')<CR>cgn
-" vnoremap <silent> c<Tab> :let @/=expand('<C-r>=fnameescape(@")<CR>')<CR>cgn
-
-let g:fugitive_gitlab_domains = ['https://gitlab.crowdsystems.net/']
 
 " Any Jump
 let g:any_jump_disable_vcs_ignore = 0
