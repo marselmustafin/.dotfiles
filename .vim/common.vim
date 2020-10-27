@@ -46,7 +46,7 @@ autocmd BufWritePre * %s/\s\+$//e " No trailing whitespaces
 set hidden " Handle multiple buffers better.
 set display+=lastline
 
-" " ================ Indentation ======================
+" ================ Indentation ======================
 
 set autoindent
 set smarttab
