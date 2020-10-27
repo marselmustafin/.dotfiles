@@ -8,18 +8,16 @@ function! DoRemote(arg)
   UpdateRemotePlugins
 endfunction
 
-" Common plugs
+" ================ Common ======================
 Plug 'sheerun/vim-polyglot'
 Plug 'scrooloose/nerdtree'
-Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'mortonfox/nerdtree-clip'
-Plug '/usr/local/opt/fzf'
-Plug 'junegunn/fzf.vim'
+Plug 'Xuyuanp/nerdtree-git-plugin' | Plug 'mortonfox/nerdtree-clip'
+Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 Plug 'Raimondi/delimitMate'
 Plug 'machakann/vim-highlightedyank'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-dispatch'
-Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive' | Plug 'shumphrey/fugitive-gitlab.vim'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-unimpaired'
@@ -34,11 +32,11 @@ Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
 Plug 'janko/vim-test'
 Plug 'AndrewRadev/splitjoin.vim'
-Plug 'google/vim-searchindex'
-Plug 'rhysd/clever-f.vim'
 Plug 'jeetsukumaran/vim-buffergator'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'k0kubun/vim-open-github'
+Plug 'pechorin/any-jump.vim'
+Plug 'vimwiki/vimwiki'
 
 " ================ Ruby/Rails ======================
 Plug 'vim-ruby/vim-ruby'
@@ -53,13 +51,24 @@ Plug 'ecomba/vim-ruby-refactoring'
 Plug 'BlakeWilliams/vim-pry'
 Plug 'victormours/ruby-memoize.vim'
 
-" etc
-Plug 'pangloss/vim-javascript'
-Plug 'kchmck/vim-coffee-script'
+" ================ Markup ======================
 Plug 'M4R7iNP/vim-inky'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+
+" ================ Python ======================
 Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
+
+" ================ Go ======================
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+
+" ================ Rust ======================
+Plug 'rust-lang/rust.vim'
+
+" ================ JS ======================
+Plug 'pangloss/vim-javascript'
+Plug 'kchmck/vim-coffee-script'
+Plug 'Quramy/tsuquyomi' " TypeScript
+Plug 'jason0x43/vim-js-indent'
 
 call plug#end()
 
@@ -76,11 +85,12 @@ nmap <leader>d :call pry#insert()<cr>
 " FZF mapping
 nnoremap <Leader>f :<C-u>FZF<CR>
 nnoremap <Leader>t :<C-u>Tags<CR>
-let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -l -g ""'
+let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git --ignore node_modules/ --ignore .bundle --files-with-matches -g "" --skip-vcs-ignores'
 
 " Ale plugin linters
 let g:ale_linters = {
       \ 'ruby': ['rubocop', 'reek'],
+      \   'javascript': ['eslint'],
       \ }
 
 let g:ale_fixers = {
@@ -181,3 +191,12 @@ let g:delimitMate_expand_space = 1
 let g:delimitMate_smart_quotes = 1
 let g:delimitMate_expand_inside_quotes = 0
 let g:delimitMate_smart_matchpairs = '^\%(\w\|\$\)'
+
+" change current word (like ciw) but repeatable with dot . for the same next word
+nnoremap <silent> <leader><Tab> :let @/=expand('<cword>')<CR>cgn
+
+" Any Jump
+let g:any_jump_disable_vcs_ignore = 0
+
+" JS highlights
+hi def link jsObjectKey Identifier

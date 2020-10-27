@@ -17,8 +17,9 @@ highlight Comment cterm=italic gui=italic
 set termguicolors
 set guicursor+=n:hor20-Cursor/lCursor " Use horizontal cursor
 set visualbell " Use visual bell (no beeping)
+set nocursorline
+set lazyredraw
 
-set regexpengine=1
 set noshowcmd
 set synmaxcol=200
 
@@ -39,7 +40,7 @@ set autowriteall  " Auto-write all file changes
 set undolevels=1000 " Number of undo levels
 set backspace=indent,eol,start  " Backspace behaviour
 set noerrorbells
-set cuc cul " Highlight current column
+" set cuc cul " Highlight current column
 " nmap ; :
 autocmd BufWritePre * %s/\s\+$//e " No trailing whitespaces
 set hidden " Handle multiple buffers better.
